@@ -8,42 +8,40 @@ import { CustomerListComponent } from "./dashboard/customer/customer-list/custom
 import { AppRedirectComponent } from "./shared/app-redirect/app-redirect.component";
 
 export const routes: Routes = [
-  {
-    path: "auth/login",
-    component: LoginComponent
-  },
-  {
-    path: "dashboard/role-selector",
-    component: RoleSelectorComponent
-  },
-  {
-    path: "dashboard/cashier",
-    component: CashierComponent
-  },
-  {
-    path: "dashboard/branch-tailor",
-    component: BranchTailorComponent
-  },
-  {
-    path: "dashboard/cutting",
-    component: CuttingMasterComponent
-  },
-  {
-    path: "dashboard/customers",
-    component: CustomerListComponent
-  },
-  {
-    path: "dashboard",
-    redirectTo: "/dashboard/role-selector",
-    pathMatch: "full"
-  },
-  {
-    path: "",
-    component: AppRedirectComponent,
-    pathMatch: "full"
-  },
-  {
-    path: "**",
-    redirectTo: "/auth/login"
-  }
+	{
+		path: "auth/login",
+		component: LoginComponent
+	},
+	{
+		path: "dashboard/role-selector",
+		component: RoleSelectorComponent
+	},
+	{
+		path: "dashboard/cashier",
+		component: CashierComponent
+	},
+	{
+		path: "dashboard/branch-tailor",
+		component: BranchTailorComponent
+	},
+	{
+		path: "dashboard/cutting",
+		component: CuttingMasterComponent
+	},
+	{
+		path: "dashboard/customers",
+		component: CustomerListComponent
+	},
+	{
+		path: "dashboard",
+		component: AppRedirectComponent
+	},
+	{
+		path: "",
+		component: AppRedirectComponent
+	},
+	{
+		path: "**",
+		component: AppRedirectComponent
+	}
 ];

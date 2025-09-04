@@ -66,10 +66,10 @@ export class LoginComponent implements OnInit {
 
 		this.authService.login(credentials).subscribe({
 			next: () => {
-      // Check if user has a stored role
+            const user = this.authService.getCurrentUser();
       const storedRole = this.dashboardService.getCurrentRole();
-      const user = this.authService.getCurrentUser();
 
+      // Check if user has a valid stored role
       if (storedRole && user?.roles?.includes(storedRole as UserRole)) {
         // User has valid stored role, go directly to dashboard
         const dashboardRoute = this.dashboardService.getDashboardRoute(storedRole as UserRole);

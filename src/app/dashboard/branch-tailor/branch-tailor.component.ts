@@ -5,6 +5,7 @@ import { Subscription } from "rxjs";
 import { AuthService } from "../../auth/auth.service";
 import { DashboardService } from "../shared/services/dashboard.service";
 import { BranchTailorService } from "./branch-tailor.service";
+import { RoleGuardService } from "./../../shared/services/role-guard.service";
 import { DashboardLayoutComponent } from "../shared/layout/dashboard-layout/dashboard-layout.component";
 import { User, UserRole } from "../../shared/models/user";
 
@@ -46,18 +47,16 @@ export class BranchTailorComponent implements OnInit, OnDestroy {
 		private authService: AuthService,
 		private dashboardService: DashboardService,
 		private branchTailorService: BranchTailorService,
+		private roleGuardService: RoleGuardService,
 		private router: Router
 	) {}
 
 	ngOnInit(): void {
+		  if (!this.roleGuardService.canAccessRole(UserRole.CASHIER)) {
+    return;
+  }
+
 		this.currentUser = this.authService.getCurrentUser();
-
-		// Verify user has branch tailor role
-		if (!this.currentUser?.roles?.includes(UserRole.BRANCH_TAILOR)) {
-			this.router.navigate(["/dashboard/role-selector"]);
-			return;
-		}
-
 		this.loadDashboardData();
 	}
 

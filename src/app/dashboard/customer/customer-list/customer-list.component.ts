@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Subscription, debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { AuthService } from '../../../auth/auth.service';
 import { CustomerService } from '../customer.service';
+import { RoleGuardService } from "./../../../shared/services/role-guard.service";
 import { DashboardLayoutComponent } from '../../shared/layout/dashboard-layout/dashboard-layout.component';
 import { 
   Customer, 
@@ -54,17 +55,16 @@ export class CustomerListComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private customerService: CustomerService,
+    		private roleGuardService: RoleGuardService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
+      if (!this.roleGuardService.canAccessRole(UserRole.CASHIER)) {
+    return;
+  }
+  
     this.currentUser = this.authService.getCurrentUser();
-    
-    if (!this.currentUser?.roles || !this.customerService.canAccessCustomers(this.currentUser.roles)) {
-      this.router.navigate(['/dashboard/role-selector']);
-      return;
-    }
-
     this.setCurrentRole();
     this.setupSearchDebouncing();
     this.loadCustomers();

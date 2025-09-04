@@ -5,6 +5,7 @@ import { Subscription } from "rxjs";
 import { AuthService } from "../../auth/auth.service";
 import { DashboardService } from "../shared/services/dashboard.service";
 import { CashierService } from "./cashier.service";
+import { RoleGuardService } from "./../../shared/services/role-guard.service";
 import { DashboardLayoutComponent } from "../shared/layout/dashboard-layout/dashboard-layout.component";
 import { User, UserRole } from "../../shared/models/user";
 
@@ -27,19 +28,17 @@ export class CashierComponent implements OnInit, OnDestroy {
 		private authService: AuthService,
 		private dashboardService: DashboardService,
 		private cashierService: CashierService,
+		private roleGuardService: RoleGuardService,
 		private router: Router
 	) {}
 
 	ngOnInit(): void {
-		this.currentUser = this.authService.getCurrentUser();
-
-		// Verify user has cashier role
-		if (!this.currentUser?.roles?.includes(UserRole.CASHIER)) {
-			this.router.navigate(["/dashboard/role-selector"]);
-			return;
-		}
-
-		this.loadDashboardData();
+  if (!this.roleGuardService.canAccessRole(UserRole.CASHIER)) {
+    return;
+  }
+  
+  this.currentUser = this.authService.getCurrentUser();
+  this.loadDashboardData();
 	}
 
 	ngOnDestroy(): void {

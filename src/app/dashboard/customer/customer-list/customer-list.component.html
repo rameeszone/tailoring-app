@@ -1,0 +1,211 @@
+<app-dashboard-layout
+  [currentRole]="currentRole"
+  [pageTitle]="pageTitle"
+  [isMobileOptimized]="isMobileOptimized">
+
+  <!-- Header Section -->
+  <section class="header-section">
+    <div class="page-header">
+      <h1 class="page-title">Customer Management</h1>
+      <p class="page-description">Search and view customer information from ERP system</p>
+    </div>
+  </section>
+
+  <!-- Search Section -->
+  <section class="search-section">
+    <div class="search-card">
+      <div class="search-header">
+        <h2 class="search-title">Find Customer</h2>
+        <div class="search-info" *ngIf="isSearchMode">
+          <span class="search-badge">Search Results for: "{{ searchTerm }}"</span>
+          <button class="clear-search-btn" (click)="clearSearch()">
+            ❌ Clear Search
+          </button>
+        </div>
+      </div>
+
+      <div class="search-controls">
+        <div class="search-input-group">
+          <input
+            type="text"
+            class="search-input"
+            placeholder="Search by mobile number..."
+            [(ngModel)]="searchTerm"
+            (input)="onSearchInput($event)"
+            [disabled]="loadingState.isSearching">
+          <div class="search-icon" *ngIf="!loadingState.isSearching">🔍</div>
+          <div class="search-loading" *ngIf="loadingState.isSearching">
+            <div class="search-spinner"></div>
+          </div>
+        </div>
+        <div class="search-hint">
+          Enter at least 2 digits to search
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section" *ngIf="!loadingState.isLoading">
+    <div class="stats-card">
+      <div class="stat-item">
+        <div class="stat-icon">👥</div>
+        <div class="stat-content">
+          <div class="stat-number">{{ totalItems }}</div>
+          <div class="stat-label">
+            {{ isSearchMode ? 'Search Results' : 'Total Customers' }}
+          </div>
+        </div>
+      </div>
+      
+      <div class="stat-item">
+        <div class="stat-icon">📄</div>
+        <div class="stat-content">
+          <div class="stat-number">{{ currentPage }}</div>
+          <div class="stat-label">Current Page</div>
+        </div>
+      </div>
+      
+      <div class="stat-item">
+        <div class="stat-icon">📋</div>
+        <div class="stat-content">
+          <div class="stat-number">{{ customers.length }}</div>
+          <div class="stat-label">Showing Now</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Customer List Section -->
+  <section class="customers-section">
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="loadingState.isLoading">
+      <div class="loading-spinner"></div>
+      <p>Loading customers...</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-state" *ngIf="loadingState.error && !loadingState.isLoading">
+      <div class="error-icon">⚠️</div>
+      <h3>Unable to Load Customers</h3>
+      <p>{{ loadingState.error }}</p>
+      <button class="retry-btn" (click)="loadCustomers()">
+        🔄 Try Again
+      </button>
+    </div>
+
+    <!-- Customer List -->
+    <div class="customers-list" *ngIf="!loadingState.isLoading && !loadingState.error">
+      
+      <!-- Pagination Info -->
+      <div class="list-header">
+        <div class="pagination-info">
+          {{ getPaginationInfo() }}
+        </div>
+        <div class="list-actions">
+          <button class="refresh-btn" (click)="isSearchMode ? performSearch(searchTerm) : loadCustomers(currentPage)">
+            🔄 Refresh
+          </button>
+        </div>
+      </div>
+
+      <!-- Customer Cards -->
+      <div class="customer-grid" *ngIf="customers.length > 0">
+        <div 
+          class="customer-card" 
+          *ngFor="let customer of customers; trackBy: trackByCustomerCode"
+          (click)="selectCustomer(customer)">
+          
+          <div class="customer-header">
+            <div class="customer-code">{{ customer.name }}</div>
+            <div class="customer-actions">
+              <button class="select-btn">Select</button>
+            </div>
+          </div>
+
+          <div class="customer-info">
+            <h3 class="customer-name">{{ customer.customer_name }}</h3>
+            <div class="customer-mobile">
+              <span class="mobile-icon">📱</span>
+              {{ formatMobileNumber(customer.mobile_no) }}
+            </div>
+          </div>
+
+          <div class="customer-footer">
+            <div class="customer-meta">
+              <span class="customer-badge">ERP Customer</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="customers.length === 0">
+        <div class="empty-icon">
+          {{ isSearchMode ? '🔍' : '👥' }}
+        </div>
+        <h3>
+          {{ isSearchMode ? 'No customers found' : 'No customers available' }}
+        </h3>
+        <p>
+          {{ isSearchMode 
+            ? 'Try searching with different mobile number digits' 
+            : 'No customers are currently available from the ERP system' 
+          }}
+        </p>
+        <button 
+          class="action-btn" 
+          (click)="isSearchMode ? clearSearch() : loadCustomers()">
+          {{ isSearchMode ? 'View All Customers' : 'Refresh List' }}
+        </button>
+      </div>
+
+      <!-- Pagination Controls -->
+      <div class="pagination-section" *ngIf="customers.length > 0 && totalPages > 1">
+        <div class="pagination-controls">
+          
+          <!-- Previous Button -->
+          <button 
+            class="pagination-btn"
+            [disabled]="!hasPrevious || loadingState.isSearching"
+            (click)="goToPage(currentPage - 1)">
+            ← Previous
+          </button>
+
+          <!-- Page Numbers -->
+          <div class="page-numbers">
+            <button 
+              class="page-btn"
+              [class.active]="page === currentPage"
+              [disabled]="loadingState.isSearching"
+              *ngFor="let page of getVisiblePages()"
+              (click)="goToPage(page)">
+              {{ page }}
+            </button>
+          </div>
+
+          <!-- Next Button -->
+          <button 
+            class="pagination-btn"
+            [disabled]="!hasNext || loadingState.isSearching"
+            (click)="goToPage(currentPage + 1)">
+            Next →
+          </button>
+        </div>
+
+        <div class="pagination-summary">
+          Page {{ currentPage }} of {{ totalPages }}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading overlay for search -->
+  <div class="search-overlay" *ngIf="loadingState.isSearching">
+    <div class="search-overlay-content">
+      <div class="search-spinner-large"></div>
+      <p>Searching customers...</p>
+    </div>
+  </div>
+
+</app-dashboard-layout>

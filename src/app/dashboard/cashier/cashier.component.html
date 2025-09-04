@@ -1,0 +1,7 @@
+<app-dashboard-layout [currentRole]="UserRole.CASHIER" [pageTitle]="pageTitle" [isMobileOptimized]="false">
+	<!-- Loading overlay -->
+	<div class="loading-overlay" *ngIf="loading">
+		<div class="loading-spinner"></div>
+		<p>Loading dashboard...</p>
+	</div>
+</app-dashboard-layout>

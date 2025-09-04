@@ -1,0 +1,65 @@
+<div class="role-selector-container">
+	<div class="role-selector-card">
+		<div class="header">
+			<div class="company-logo">
+				<h1>Digital Tailoring System</h1>
+			</div>
+
+			<div class="user-info" *ngIf="currentUser">
+				<h2>Welcome, {{ currentUser.employee_name }}</h2>
+				<p class="user-details">
+					{{ currentUser.designation || 'Employee' }} • {{ currentUser.branch ||
+					'Head Office' }}
+				</p>
+			</div>
+		</div>
+
+		<div class="role-selection">
+			<h3>Select Your Dashboard</h3>
+			<p class="instruction">
+				You have access to multiple roles. Choose the dashboard you want to use:
+			</p>
+
+			<div class="roles-grid">
+				<div
+					*ngFor="let roleOption of availableRoles"
+					class="role-card"
+					[class.loading]="loading"
+					(click)="selectRole(roleOption.role)">
+					<div class="role-icon">{{ roleOption.icon }}</div>
+					<div class="role-content">
+						<h4 class="role-title">{{ roleOption.title }}</h4>
+						<p class="role-description">{{ roleOption.description }}</p>
+						<div class="role-meta">
+							<span class="device-info">
+								{{ getDeviceIcon(roleOption.deviceType) }}
+								<span class="device-text">
+									{{ roleOption.deviceType === 'both' ? 'Desktop & Mobile' :
+									roleOption.deviceType === 'mobile' ? 'Mobile Optimized' :
+									'Desktop' }}
+								</span>
+							</span>
+						</div>
+					</div>
+					<div class="role-arrow">→</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="footer">
+			<button type="button" class="logout-btn" (click)="logout()">
+				Logout
+			</button>
+
+			<div class="help-text">
+				<p>Need help? Contact your system administrator</p>
+			</div>
+		</div>
+	</div>
+
+	<!-- Loading overlay -->
+	<div class="loading-overlay" *ngIf="loading">
+		<div class="loading-spinner"></div>
+		<p>Loading your dashboard...</p>
+	</div>
+</div>

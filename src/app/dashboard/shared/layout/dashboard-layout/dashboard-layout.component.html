@@ -1,0 +1,41 @@
+<div class="dashboard-container" [ngClass]="layoutClass">
+
+  <!-- Sidebar (Desktop Only) -->
+  <app-sidebar 
+    *ngIf="!isMobileOptimized"
+    [currentRole]="currentRole"
+    [currentUser]="currentUser"
+    [collapsed]="sidebarCollapsed"
+    (collapseChange)="onSidebarCollapseChange($event)">
+  </app-sidebar>
+
+  <!-- Main Content Area -->
+  <div class="main-wrapper" [class.sidebar-collapsed]="sidebarCollapsed && !isMobileOptimized">
+    
+    <!-- Desktop Header -->
+    <app-dashboard-header 
+      *ngIf="!isMobileOptimized"
+      [currentRole]="currentRole"
+      [pageTitle]="pageTitle"
+      [currentUser]="currentUser"
+      [hasMultipleRoles]="hasMultipleRoles"
+      [sidebarCollapsed]="sidebarCollapsed"
+      (toggleSidebar)="toggleSidebar()">
+    </app-dashboard-header>
+
+    <!-- Mobile Header -->
+    <app-mobile-header 
+      *ngIf="isMobileOptimized"
+      [currentRole]="currentRole"
+      [pageTitle]="pageTitle"
+      [currentUser]="currentUser"
+      [hasMultipleRoles]="hasMultipleRoles">
+    </app-mobile-header>
+
+    <!-- Page Content -->
+    <main class="dashboard-content">
+      <ng-content></ng-content>
+    </main>
+
+  </div>
+</div>

@@ -1,0 +1,66 @@
+<header class="mobile-header">
+	<div class="header-content">
+		<!-- Left: Hamburger Menu -->
+		<button class="hamburger-btn" (click)="toggleMobileMenu()">
+			<div class="hamburger-lines">
+				<span [class.active]="showMobileMenu"></span>
+				<span [class.active]="showMobileMenu"></span>
+				<span [class.active]="showMobileMenu"></span>
+			</div>
+		</button>
+
+		<!-- Center: Page Title & Role -->
+		<div class="header-center">
+			<div class="page-title">{{ pageTitle }}</div>
+			<div class="current-role" *ngIf="currentRoleInfo">
+				<span class="role-icon">{{ currentRoleInfo.icon }}</span>
+				<span class="role-name">{{ currentRoleInfo.title }}</span>
+			</div>
+		</div>
+
+		<!-- Right: User Initial -->
+		<div class="user-avatar" *ngIf="currentUser">
+			{{ currentUser.employee_name.charAt(0).toUpperCase() }}
+		</div>
+	</div>
+
+	<!-- Mobile Menu Overlay -->
+	<div
+		class="mobile-menu-overlay"
+		*ngIf="showMobileMenu"
+		(click)="showMobileMenu = false"></div>
+
+	<!-- Mobile Menu -->
+	<div class="mobile-menu" [class.open]="showMobileMenu">
+		<!-- User Info -->
+		<div class="menu-header" *ngIf="currentUser">
+			<div class="user-info">
+				<div class="user-name">{{ currentUser.employee_name }}</div>
+				<div class="user-branch">{{ currentUser.branch || 'Head Office' }}</div>
+			</div>
+		</div>
+
+		<!-- Role Switcher (if multiple roles) -->
+		<div class="menu-section" *ngIf="hasMultipleRoles">
+			<div class="section-title">Switch Role</div>
+			<div class="role-list">
+				<button
+					class="role-item"
+					*ngFor="let roleOption of availableRoles"
+					(click)="switchRole(roleOption.role)">
+					<span class="role-icon">{{ roleOption.icon }}</span>
+					<span class="role-title">{{ roleOption.title }}</span>
+					<span class="role-arrow">→</span>
+				</button>
+			</div>
+		</div>
+
+		<!-- Menu Actions -->
+		<div class="menu-actions">
+			<button class="logout-btn" (click)="logout()">
+				<span class="logout-icon">🚪</span>
+				Logout
+			</button>
+		</div>
+	</div>
+</header>

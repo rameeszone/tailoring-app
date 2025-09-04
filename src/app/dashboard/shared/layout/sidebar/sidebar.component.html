@@ -1,0 +1,53 @@
+<nav class="sidebar" [class.collapsed]="collapsed">
+  
+  <!-- Sidebar Header -->
+  <div class="sidebar-header">
+    <div class="role-info" *ngIf="!collapsed">
+      <h3 class="role-title">{{ roleTitle }}</h3>
+      <div class="user-name" *ngIf="currentUser">
+        {{ currentUser.employee_name }}
+      </div>
+    </div>
+    
+    <!-- Collapse Toggle -->
+    <button class="collapse-btn" (click)="toggleCollapse()">
+      {{ collapsed ? '→' : '←' }}
+    </button>
+  </div>
+
+  <!-- Navigation Menu -->
+  <div class="sidebar-menu">
+    <ul class="nav-list">
+      <li class="nav-item" *ngFor="let module of modules">
+        
+        <!-- Active Module Link -->
+        <a [routerLink]="module.route" 
+           class="nav-link"
+           [class.active]="module.isActive"
+           routerLinkActive="active"
+           *ngIf="!module.isComingSoon">
+          <span class="nav-icon">{{ module.icon }}</span>
+          <span class="nav-label" *ngIf="!collapsed">{{ module.title }}</span>
+        </a>
+
+        <!-- Coming Soon Module -->
+        <div class="nav-link coming-soon" *ngIf="module.isComingSoon">
+          <span class="nav-icon">{{ module.icon }}</span>
+          <span class="nav-label" *ngIf="!collapsed">
+            {{ module.title }}
+            <small class="coming-soon-badge">Soon</small>
+          </span>
+        </div>
+
+      </li>
+    </ul>
+  </div>
+
+  <!-- Sidebar Footer -->
+  <div class="sidebar-footer" *ngIf="!collapsed">
+    <div class="footer-info">
+      <small>Digital Tailoring System v1.0</small>
+    </div>
+  </div>
+
+</nav>

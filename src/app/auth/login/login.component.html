@@ -1,0 +1,69 @@
+<div class="login-container">
+	<div class="login-card">
+		<div class="login-header">
+			<h1 class="login-title">Digital Tailoring System</h1>
+			<p class="login-subtitle">Sign in to your account</p>
+		</div>
+
+		<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+			<!-- Error Alert -->
+			<div class="error-alert" *ngIf="error" role="alert" aria-live="assertive">
+				<span class="error-icon">⚠️</span>
+				<span class="error-text">{{ error }}</span>
+			</div>
+
+			<!-- Username Field -->
+			<div class="form-group">
+				<label for="username" class="form-label">Username / Email</label>
+				<input
+					type="email"
+					id="username"
+					formControlName="username"
+					class="form-input"
+					[class.error]="hasError('username', 'required') || hasError('username', 'email')"
+					placeholder="Enter your username or email"
+					autocomplete="username" />
+				<div
+					class="field-error"
+					*ngIf="hasError('username', 'required') || hasError('username', 'email')"
+					role="alert">
+					{{ getErrorMessage('username') }}
+				</div>
+			</div>
+
+			<!-- Password Field -->
+			<div class="form-group">
+				<label for="password" class="form-label">Password</label>
+				<input
+					type="password"
+					id="password"
+					formControlName="password"
+					class="form-input"
+					[class.error]="hasError('password', 'required') || hasError('password', 'minlength')"
+					placeholder="Enter your password"
+					autocomplete="current-password" />
+				<div
+					class="field-error"
+					*ngIf="hasError('password', 'required') || hasError('password', 'minlength')"
+					role="alert">
+					{{ getErrorMessage('password') }}
+				</div>
+			</div>
+
+			<!-- Submit Button -->
+			<button
+				type="submit"
+				class="login-button"
+				[disabled]="loading || loginForm.invalid">
+				<span *ngIf="loading" class="loading-spinner" aria-hidden="true"></span>
+				<span>{{ loading ? 'Signing in...' : 'Sign In' }}</span>
+			</button>
+		</form>
+
+		<div class="login-footer">
+			<p class="footer-text">
+				Having trouble? Contact your system administrator.
+			</p>
+		</div>
+	</div>
+</div>

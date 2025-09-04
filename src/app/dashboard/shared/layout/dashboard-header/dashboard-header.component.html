@@ -1,0 +1,56 @@
+<header class="dashboard-header">
+	<div class="header-content">
+		<!-- Left Section -->
+		<div class="header-left">
+			  <!-- Optional: Sidebar toggle button -->
+  <button class="sidebar-toggle-btn" (click)="onToggleSidebar()">
+    {{ sidebarCollapsed ? '→' : '←' }}
+  </button>
+  
+			<div class="page-info">
+				<h1 class="page-title">{{ pageTitle }}</h1>
+				<div class="current-role" *ngIf="currentRoleInfo">
+					<span class="role-icon">{{ currentRoleInfo.icon }}</span>
+					<span class="role-name">{{ currentRoleInfo.title }}</span>
+				</div>
+			</div>
+		</div>
+
+		<!-- Right Section -->
+		<div class="header-right">
+			<!-- Role Switcher (only if multiple roles) -->
+			<div class="role-switcher" *ngIf="hasMultipleRoles">
+				<button
+					class="role-dropdown-btn"
+					(click)="toggleRoleDropdown()"
+					[class.active]="showRoleDropdown">
+					Switch Role
+					<span class="dropdown-arrow">{{ showRoleDropdown ? '↑' : '↓' }}</span>
+				</button>
+
+				<div class="role-dropdown" *ngIf="showRoleDropdown">
+					<div
+						class="role-option"
+						*ngFor="let roleOption of availableRoles"
+						(click)="switchRole(roleOption.role)">
+						<span class="role-icon">{{ roleOption.icon }}</span>
+						<span class="role-title">{{ roleOption.title }}</span>
+					</div>
+				</div>
+			</div>
+
+			<!-- User Info -->
+			<div class="user-info" *ngIf="currentUser">
+				<div class="user-details">
+					<div class="user-name">{{ currentUser.employee_name }}</div>
+					<div class="user-branch">
+						{{ currentUser.branch || 'Head Office' }}
+					</div>
+				</div>
+			</div>
+
+			<!-- Logout Button -->
+			<button class="logout-btn" (click)="logout()">Logout</button>
+		</div>
+	</div>
+</header>

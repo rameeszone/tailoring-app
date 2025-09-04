@@ -1,0 +1,116 @@
+<app-dashboard-layout
+	[currentRole]="UserRole.CUTTING_MASTER"
+	[pageTitle]="pageTitle"
+	[isMobileOptimized]="true">
+	<!-- Quick Stats -->
+	<section class="mobile-stats">
+		<div class="stats-row">
+			<div class="stat-item">
+				<div class="stat-number">{{ stats?.assignedTasks || 0 }}</div>
+				<div class="stat-label">Assigned</div>
+			</div>
+			<div class="stat-item">
+				<div class="stat-number">{{ stats?.completedTasks || 0 }}</div>
+				<div class="stat-label">Completed</div>
+			</div>
+			<div class="stat-item">
+				<div class="stat-number">{{ stats?.inProgress || 0 }}</div>
+				<div class="stat-label">In Progress</div>
+			</div>
+			<div class="stat-item">
+				<div class="stat-number">{{ stats?.fabricsUsed || 0 }}</div>
+				<div class="stat-label">Fabrics Used</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- QR Scanner Section -->
+	<section class="scanner-section">
+		<button class="qr-scanner-btn" (click)="scanQRCode()">
+			<div class="scanner-icon">📱</div>
+			<div class="scanner-text">
+				<h3>Scan QR Code</h3>
+				<p>Start or update cutting task</p>
+			</div>
+		</button>
+	</section>
+
+	<!-- Current Tasks -->
+	<section class="tasks-section">
+		<div class="section-header">
+			<h2 class="section-title">My Cutting Tasks</h2>
+			<div class="task-count">{{ tasks.length }} tasks</div>
+		</div>
+
+		<div class="tasks-list" *ngIf="tasks.length > 0; else noTasks">
+			<div class="task-card" *ngFor="let task of tasks">
+				<!-- Task Header -->
+				<div class="task-header">
+					<div class="task-id">#{{ task.id }}</div>
+					<div
+						class="task-priority"
+						[ngClass]="getPriorityClass(task.priority)">
+						{{ task.priority | titlecase }}
+					</div>
+				</div>
+
+				<!-- Task Info -->
+				<div class="task-info">
+					<h3 class="customer-name">{{ task.customerName }}</h3>
+					<div class="garment-details">
+						<span class="garment-type">{{ task.garmentType }}</span>
+						<span class="fabric-type">• {{ task.fabricType }}</span>
+					</div>
+					<div class="task-meta">
+						<span class="pieces">{{ task.pieces }} pieces</span>
+						<span class="assigned-time">{{ formatDate(task.assignedAt) }}</span>
+					</div>
+				</div>
+
+				<!-- Task Status -->
+				<div class="task-status">
+					<span class="status-badge" [ngClass]="getStatusClass(task.status)">
+						{{ task.status | titlecase }}
+					</span>
+				</div>
+
+				<!-- Task Actions -->
+				<div class="task-actions">
+					<button
+						*ngIf="task.status === 'pending'"
+						class="action-btn start-btn"
+						(click)="startTask(task.id)">
+						Start Cutting
+					</button>
+
+					<button
+						*ngIf="task.status === 'in_progress'"
+						class="action-btn complete-btn"
+						(click)="completeTask(task.id)">
+						Mark Complete
+					</button>
+
+					<button
+						class="action-btn details-btn"
+						(click)="viewTaskDetails(task.id)">
+						View Details
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<ng-template #noTasks>
+			<div class="empty-state">
+				<div class="empty-icon">✂️</div>
+				<h3>No Cutting Tasks</h3>
+				<p>No tasks assigned at the moment</p>
+			</div>
+		</ng-template>
+	</section>
+
+	<!-- Loading overlay -->
+	<div class="loading-overlay" *ngIf="loading">
+		<div class="loading-spinner"></div>
+		<p>Loading tasks...</p>
+	</div>
+</app-dashboard-layout>

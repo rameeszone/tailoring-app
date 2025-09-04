@@ -1,0 +1,117 @@
+<app-dashboard-layout
+	[currentRole]="UserRole.BRANCH_TAILOR"
+	[pageTitle]="pageTitle"
+	[isMobileOptimized]="false">
+	<!-- Quick Stats -->
+	<section class="stats-section">
+		<div class="stats-grid">
+			<div class="stat-card">
+				<div class="stat-icon">📋</div>
+				<div class="stat-content">
+					<div class="stat-number">{{ stats?.todayOrders || 0 }}</div>
+					<div class="stat-label">Today's Orders</div>
+				</div>
+			</div>
+
+			<div class="stat-card">
+				<div class="stat-icon">⏳</div>
+				<div class="stat-content">
+					<div class="stat-number">{{ stats?.pendingPayments || 0 }}</div>
+					<div class="stat-label">Pending Payments</div>
+				</div>
+			</div>
+
+			<div class="stat-card">
+				<div class="stat-icon">✅</div>
+				<div class="stat-content">
+					<div class="stat-number">{{ stats?.completedOrders || 0 }}</div>
+					<div class="stat-label">Completed Orders</div>
+				</div>
+			</div>
+
+			<div class="stat-card">
+				<div class="stat-icon">💰</div>
+				<div class="stat-content">
+					<div class="stat-number">
+						{{ formatCurrency(stats?.totalRevenue || 0) }}
+					</div>
+					<div class="stat-label">Today's Revenue</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Quick Actions -->
+	<section class="actions-section">
+		<div class="actions-grid">
+			<button class="action-card primary" (click)="createNewOrder()">
+				<div class="action-icon">➕</div>
+				<div class="action-content">
+					<h3>Create New Order</h3>
+					<p>Start a new customer order</p>
+				</div>
+			</button>
+
+			<button class="action-card" (click)="viewAllOrders()">
+				<div class="action-icon">📋</div>
+				<div class="action-content">
+					<h3>View All Orders</h3>
+					<p>Manage existing orders</p>
+				</div>
+			</button>
+
+			<button class="action-card" (click)="manageCustomers()">
+				<div class="action-icon">👥</div>
+				<div class="action-content">
+					<h3>Customer Management</h3>
+					<p>View and edit customer profiles</p>
+				</div>
+			</button>
+		</div>
+	</section>
+
+	<!-- Recent Orders -->
+	<section class="orders-section">
+		<div class="section-header">
+			<h2 class="section-title">Recent Orders</h2>
+		</div>
+
+		<div class="orders-list" *ngIf="recentOrders.length > 0; else noOrders">
+			<div class="order-item" *ngFor="let order of recentOrders">
+				<div class="order-info">
+					<div class="customer-name">{{ order.customerName }}</div>
+					<div class="order-id">#{{ order.id }}</div>
+				</div>
+				<div class="order-details">
+					<div class="order-date">{{ formatDate(order.orderDate) }}</div>
+					<div class="order-items">{{ order.items }} items</div>
+				</div>
+				<div class="order-amount">{{ formatCurrency(order.total) }}</div>
+				<div class="order-status">
+					<span
+						class="status-badge"
+						[ngClass]="getStatusBadgeClass(order.status)">
+						{{ order.status | titlecase }}
+					</span>
+				</div>
+			</div>
+		</div>
+
+		<ng-template #noOrders>
+			<div class="empty-state">
+				<div class="empty-icon">📝</div>
+				<h3>No Recent Orders</h3>
+				<p>Start by creating your first order of the day</p>
+				<button class="create-order-btn" (click)="createNewOrder()">
+					Create New Order
+				</button>
+			</div>
+		</ng-template>
+	</section>
+
+	<!-- Loading overlay -->
+	<div class="loading-overlay" *ngIf="loading">
+		<div class="loading-spinner"></div>
+		<p>Loading dashboard...</p>
+	</div>
+</app-dashboard-layout>
